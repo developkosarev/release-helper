@@ -7,12 +7,9 @@ const getNameReleaseBranch = () => {
 
     if (!release) {
         throw new Error('Release is not specified')
-    }
-    if (!version) {
-        throw new Error('Version is not specified')
-    }
+    }    
 
-    let result = release
+    let result = `release/${release}`
     if (version) {
         result = `${result}-v${version}`
     }

@@ -1,14 +1,7 @@
 import chalk from 'chalk';
 import { getPullRequestUrl, createPullRequest } from './services/bitbucket.js';
-import { getNameReleaseBranch, createBranchesArray } from './helpers/branch.js'
+import { createBranchesArray } from './helpers/branch.js'
 import { validateEnv } from './helpers/validator.js'
-
-const createReleaseBranch = async () => {
-    const name = getNameReleaseBranch();
-    //const result = await createReleaseBranch(name);
-
-    return name
-}
 
 const createPullRequests = async () => {
     const branches = createBranchesArray();

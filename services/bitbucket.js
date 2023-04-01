@@ -30,15 +30,6 @@ function buildApiUrl(workspace, repoSlug, action) {
   }
 }
 
-function buildUrl(workspace, repoSlug, action) {
-  switch (action.type) {
-    case "pullRequest":
-      return `${BASE_URL}${workspace}/${repoSlug}/pull-requests`;      
-    default:
-      return `${BASE_URL}${workspace}/${repoSlug}/`;
-  }
-}
-
 const getBranch = async (branch) => {  
   const url = `${BASE_API_URL}${workspace}/${repository}/refs/branches/${branch}`
   
@@ -127,44 +118,22 @@ const createPullRequest = async (branch, title) => {
 }
 
 const getPullRequests = async () => {
-    const token = process.env.TOKEN;
-    const workspace = process.env.WORKSPACE;
-    const repository = process.env.REPOSITORY;
-
-    if (!token) {
-		  throw new Error('Token is not specified');
-	  }
-    if (!workspace) {
-		  throw new Error('Workspace is not specified');
-	  }
-    if (!repository) {
-		  throw new Error('Repository is not specified');
-	  }
-    
-    const url = buildApiUrl(workspace, repository, { type: "pullRequest" })
-    const config = {
-        headers: { 
-            Authorization: `Bearer ${token}`,
-            Accept: 'application/json'
-        }        
-    };    
-	
-	const { data } = await axios.get(url, config);
+  const url = `${BASE_API_URL}${workspace}/${repository}/pullrequests`
+  	
+	const { data } = await axios.get(url, config());
 	return data;
 }
 
-const getPullRequestUrl = (id) => {
-  const workspace = process.env.WORKSPACE
-  const repository = process.env.REPOSITORY
-  
-  if (!workspace) {
-    throw new Error('Workspace is not specified')
-  }
-  if (!repository) {
-    throw new Error('Repository is not specified')
-  }
+const getPullRequestByBranch = async (branch, destination) => {
+  const params = `source.branch.name="${branch}"+AND+destination.branch.name="${destination}"+AND+state="OPEN"`
+  const url = `${BASE_API_URL}${workspace}/${repository}/pullrequests?q=${params}`
+  	
+	const { data } = await axios.get(url, config());
+	return data;
+}
 
-  const url = buildUrl(workspace, repository, { type: "pullRequest" })
+const getPullRequestUrl = (id) => {    
+  const url = `${BASE_URL}${workspace}/${repository}/pull-requests`
   return `${url}/${id}`
 }
 
@@ -173,5 +142,6 @@ export {
   createBranch,
   getPullRequestUrl,
   createPullRequest,
-  getPullRequests
+  getPullRequests,
+  getPullRequestByBranch
 };
