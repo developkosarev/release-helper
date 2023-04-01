@@ -19,17 +19,6 @@ function config() {
   }
 }
 
-function buildApiUrl(workspace, repoSlug, action) {  
-  switch (action.type) {
-    case "pullRequest":
-      return `${BASE_API_URL}${workspace}/${repoSlug}/pullrequests`;
-    case "commentDiff":
-      return `${BASE_API_URL}${workspace}/${repoSlug}/commits/?exclude=master`;
-    default:
-      return `${BASE_API_URL}${workspace}/${repoSlug}/`;
-  }
-}
-
 const getBranch = async (branch) => {  
   const url = `${BASE_API_URL}${workspace}/${repository}/refs/branches/${branch}`
   
@@ -59,38 +48,11 @@ const createBranch = async (branch, developBranch) => {
   }
 }
 
-const createPullRequest = async (branch, title) => {
-  const token = process.env.TOKEN;    
-  const workspace = process.env.WORKSPACE;
-  const repository = process.env.REPOSITORY;
-  const release = process.env.RELEASE;
-
-  if (!token) {
-		throw new Error('Token is not specified');
-	}    
-  if (!workspace) {
-		throw new Error('Workspace is not specified');
-	}
-  if (!repository) {
-		throw new Error('Repository is not specified');
-	}
-  if (!release) {
-		throw new Error('Release is not specified');
-	}
-
-  const url = buildApiUrl(workspace, repository, { type: "pullRequest" })
-  const config = {
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    }
-  };
-
-  const destinationBranch = `release//${release}`
-
+const createPullRequest = async (branch, title, destination) => {  
+  const url = `${BASE_API_URL}${workspace}/${repository}/pullrequests`
+  
   const bodyData = `{
-    "title": "[${branch}] ${title}",
+    "title": "${title}",
     "description": "${title}",
     "source": {
       "branch": {
@@ -99,14 +61,14 @@ const createPullRequest = async (branch, title) => {
     },
     "destination": {
       "branch": {
-        "name": "${destinationBranch}"
+        "name": "${destination}"
       }
     },
     "close_source_branch": false
   }`
       
   try {
-    const { data } = await axios.post(url, bodyData, config);
+    const { data } = await axios.post(url, bodyData, config());
     return data;
   } catch (e) {
     console.log(e.response.data);
@@ -121,8 +83,8 @@ const getPullRequests = async () => {
 	return data;
 }
 
-const getPullRequestByBranch = async (branch, destination) => {
-  const params = `source.branch.name="${branch}"+AND+destination.branch.name="${destination}"+AND+state="OPEN"`
+const getPullRequestByBranch = async (branch, destination, state="OPEN") => {
+  const params = `source.branch.name="${branch}"+AND+destination.branch.name="${destination}"+AND+state="${state}"`
   const url = `${BASE_API_URL}${workspace}/${repository}/pullrequests?q=${params}`
   	
 	const { data } = await axios.get(url, config());

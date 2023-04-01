@@ -7,8 +7,8 @@ const updateDestinationBranch = async () => {
 	const branches = createBranchesArray()
 
 	for (const item of branches) {
-		const result = await getPullRequestByBranch(item.branch, developBranch);		
-		if (result.size == 1 ) {			
+		const result = await getPullRequestByBranch(item.branch, developBranch);
+		if (result.size == 1 ) {
 			const destination = getNameReleaseBranch()			
 			const branch = await updatePullRequestDestination(result.values[0].id, destination)			
 
