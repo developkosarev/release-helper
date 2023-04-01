@@ -1,31 +1,27 @@
-import * as dotenv from 'dotenv'
-dotenv.config()
-import { createPullRequest } from './services/bitbucket.js';
+import chalk from 'chalk';
+import { getPullRequestUrl, createPullRequest } from './services/bitbucket.js';
+import { getNameReleaseBranch, createBranchesArray } from './helpers/branch.js'
+import { validateEnv } from './helpers/validator.js'
 
-const createBrancesOfRelease = () => {
-    const data = [];
+const createReleaseBranch = async () => {
+    const name = getNameReleaseBranch();
+    //const result = await createReleaseBranch(name);
 
-    ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10'].forEach((item) => {
-        let branch = process.env[`BRANCH_${item}`];
-        let title  = process.env[`BRANCH_TITLE_${item}`];
-
-        if (branch) {
-            data.push({branch: branch, title: title});
-        }
-    })
-
-    return data;
+    return name
 }
 
 const createPullRequests = async () => {
-    const brances = createBrancesOfRelease();
+    const branches = createBranchesArray();
 
-    brances.forEach(async element => {
-        const pullRequest = await createPullRequest(element.branch, element.title);
-        if (pullRequest) {
-            console.log(pullRequest.id)
+    for (const item of branches) {
+        const result = await createPullRequest(item.branch, item.title);
+        if (result) {
+            const url = getPullRequestUrl(result.id)
+            console.log(`Pull request created for the ${chalk.bgGreen(item.branch)} branch ${chalk.blue.bold(url)}`)
         }        
-    });	
+    }    
 }
 
-createPullRequests();
+if (validateEnv()) {
+    createPullRequests();
+}

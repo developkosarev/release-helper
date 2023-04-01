@@ -1,24 +1,25 @@
-import * as dotenv from 'dotenv'
-dotenv.config()
-import { getPullRequests } from './services/bitbucket.js';
+import chalk from 'chalk';
+import { validateEnv, release, developBranch } from './helpers/validator.js'
+import { getBranch, createBranch } from './services/bitbucket.js'
 
-//const brances = [
-//    { branc: 'fix9', comment: 'fix9', description: 'test9' },
-//    { branc: 'fix10', comment: 'fix10', description: 'test10' }
-//];
-//
-//console.log('Test');
-//brances.forEach(element => {
-//    console.log(element)
-//});
+const createReleaseBranch = async () => {
+    const devBranch = await getBranch(developBranch)
+    if (!devBranch) {
+        throw new Error("Can't get a develop branch")
+    }
 
-const getListPR = async () => {			
-	const pr = await getPullRequests();	
-    //console.log(pr);
+    const name = `release/${release}`
+    let releaseBranch = await getBranch(name)    
 
-    pr.values.forEach(element => {
-        //console.log(element.source)
-    });
+    if (!releaseBranch) {
+        releaseBranch = await createBranch(name, developBranch)
+    }
+    return releaseBranch
 }
 
-getListPR();
+if (validateEnv()) {    
+    const branch = await createReleaseBranch()    
+    const releaseName = branch.name;    
+
+    console.log(`The release ${chalk.bgMagenta(releaseName)} is initialized (branch created and PRs saved to file)`);
+}
