@@ -25,7 +25,7 @@ const preparePullRequest = async () => {
 	const branches = createBranchesArray()
 
 	for (const item of branches) {
-		const result = await getPullRequestByBranch(item.branch, 'master');		
+		const result = await getPullRequestByBranch(item.branch, developBranch);		
 		if (result.size == 1 ) {
 			const url = getPullRequestUrl(result.values[0].id)		
 			console.log(`The pull request ${chalk.blue.bold(url)} exists`);
@@ -33,10 +33,9 @@ const preparePullRequest = async () => {
 			console.error(`The pull request for the ${chalk.red.bold(item.branch)} branch was not found`);
 		}	
 	}
-
 }
 
-if (validateEnv()) {    
+if (validateEnv()) {
 	await createReleaseBranch()
 	await preparePullRequest()
 }

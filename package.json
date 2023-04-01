@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
+    "pre-release": "node pre-release.js",
     "build": "node release.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

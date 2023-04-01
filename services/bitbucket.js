@@ -41,10 +41,7 @@ const getBranch = async (branch) => {
   }	
 }
 
-const createBranch = async (branch, developBranch) => {  
-  const workspace = process.env.WORKSPACE;
-  const repository = process.env.REPOSITORY;
-
+const createBranch = async (branch, developBranch) => {
   const url = `${BASE_API_URL}${workspace}/${repository}/refs/branches`  
   const bodyData = `{
     "name": "${branch}",
@@ -59,7 +56,7 @@ const createBranch = async (branch, developBranch) => {
   } catch (e) {
     console.log(e.response.data)
     return null;
-  }    
+  }
 }
 
 const createPullRequest = async (branch, title) => {
@@ -132,6 +129,26 @@ const getPullRequestByBranch = async (branch, destination) => {
 	return data;
 }
 
+const updatePullRequestDestination = async (id, destination) => {
+  const url = `${BASE_API_URL}${workspace}/${repository}/pullrequests/${id}`
+
+  const bodyData = `{
+    "destination": {
+      "branch": {
+        "name":"${destination}"
+      }
+    }      
+  }`
+  
+  try {    
+    const { data } = await axios.put(url, bodyData, config());
+    return data
+  } catch (e) {
+    console.log(e.response.data)
+    return null;
+  }
+}
+
 const getPullRequestUrl = (id) => {    
   const url = `${BASE_URL}${workspace}/${repository}/pull-requests`
   return `${url}/${id}`
@@ -143,5 +160,6 @@ export {
   getPullRequestUrl,
   createPullRequest,
   getPullRequests,
-  getPullRequestByBranch
+  getPullRequestByBranch,
+  updatePullRequestDestination
 };

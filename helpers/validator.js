@@ -1,14 +1,13 @@
 import * as dotenv from 'dotenv'
 dotenv.config()
 
+const token = process.env.TOKEN
+const workspace = process.env.WORKSPACE
+const repository = process.env.REPOSITORY
 const release = process.env.RELEASE
 const developBranch = process.env.DEVELOP_BRANCH
 
-const validateEnv = () => {
-	const token = process.env.TOKEN
-	const workspace = process.env.WORKSPACE
-	const repository = process.env.REPOSITORY
-
+const validateEnv = () => {	
 	if (!token) {
 		throw new Error('Token is not specified')
 	}    
