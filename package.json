@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node index.js",
     "pre-release": "node pre-release.js",
-    "next-release": "node release.js",
+    "next-release": "node next-release.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
