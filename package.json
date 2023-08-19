@@ -5,9 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "npx tsc; node dist/index.js",
-    "pre-release": "node dist/pre-release.js",
-    "next-release": "node dist/next-release.js",
+    "start": "npx tsc; node dist/index.js",    
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
