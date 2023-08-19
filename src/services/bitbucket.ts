@@ -1,15 +1,17 @@
 import * as dotenv from 'dotenv'
 dotenv.config()
 import axios from 'axios';
+import { getToken } from '../config/bitbucket.js'
 
 const BASE_API_URL: string = "https://api.bitbucket.org/2.0/repositories/";
 const BASE_URL : string = "https://bitbucket.org/";
 
-const token = process.env['TOKEN'];
 const workspace = process.env['WORKSPACE'];
 const repository = process.env['REPOSITORY'];
 
-function config() {  
+function config() {
+  const token = getToken();
+
   return {
     headers: { 
       'Authorization': `Bearer ${token}`,

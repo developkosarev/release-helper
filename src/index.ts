@@ -1,7 +1,8 @@
 import chalk from 'chalk';
 import inquirer from 'inquirer';
-import { validateEnv, release, developBranch } from './helpers/validator.js'
-import { getNameReleaseBranch, createBranchesArray, getNameInitialReleaseBranch } from './helpers/branch.js'
+import { createBranchesArray } from './config/branch.js'
+import { getNameReleaseBranch, getNameInitialReleaseBranch } from './config/release.js'
+import { validateEnv, developBranch } from './helpers/validator.js'
 import { getBranch, createBranch, getPullRequestByBranch, getPullRequestUrl, updatePullRequestDestination, createPullRequest } from './services/bitbucket.js'
 
 const createReleaseBranch = async () => {
