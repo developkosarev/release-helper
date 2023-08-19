@@ -1,8 +1,8 @@
 import * as dotenv from 'dotenv'
 dotenv.config()
 
-const getNameInitialReleaseBranch = () => {
-  const release = process.env.RELEASE  
+const getNameInitialReleaseBranch = (): string => {
+  const release: string | undefined = process.env['RELEASE']
 
   if (!release) {
       throw new Error('Release is not specified')
@@ -12,7 +12,7 @@ const getNameInitialReleaseBranch = () => {
 }
 
 const getNameReleaseBranch = () => {  
-  const version = process.env.RELEASE_VERSION
+  const version: string | undefined = process.env['RELEASE_VERSION']
   
   let result = getNameInitialReleaseBranch()
   if (version) {

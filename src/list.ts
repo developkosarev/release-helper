@@ -10,9 +10,9 @@ const getListPR = async () => {
 	const pr = await getPullRequests();	
 	//console.log(pr);
 
-	pr.values.forEach(element => {
-		//console.log(element.source)
-	});
+	//pr.values.forEach(element => {
+	//	//console.log(element.source)
+	//});
 }
 
 if (validateEnv()) {
