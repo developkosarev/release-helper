@@ -1,7 +1,8 @@
 import chalk from 'chalk';
+import inquirer from 'inquirer';
 import { validateEnv, release, developBranch } from './helpers/validator.js'
-import { getNameReleaseBranch, createBranchesArray } from './helpers/branch.js'
-import { getBranch, createBranch, getPullRequestByBranch, getPullRequestUrl } from './services/bitbucket.js'
+import { getNameReleaseBranch, createBranchesArray, getNameInitialReleaseBranch } from './helpers/branch.js'
+import { getBranch, createBranch, getPullRequestByBranch, getPullRequestUrl, updatePullRequestDestination, createPullRequest } from './services/bitbucket.js'
 
 const createReleaseBranch = async () => {
 	const devBranch = await getBranch(developBranch)
@@ -35,7 +36,82 @@ const preparePullRequest = async (): Promise<void> => {
 	}
 }
 
+const updateDestinationBranch = async (): Promise<void> => {
+	const branches = createBranchesArray()
+
+	for (const item of branches) {
+		const result = await getPullRequestByBranch(item.branch, developBranch);
+		if (result.size == 1 ) {
+			const destination = getNameReleaseBranch()			
+			const branch = await updatePullRequestDestination(result.values[0].id, destination)			
+
+			const url = getPullRequestUrl(branch.id)		
+			console.log(`The pull request ${chalk.blue.bold(url)} updated`);
+		} else {
+			console.error(`The pull request for the ${chalk.red.bold(item.branch)} branch was not found`);
+		}	
+	}
+}
+
+const createPullRequests = async () => {
+    const branches = createBranchesArray();
+
+    for (const item of branches) {        
+        const releaseBranch = getNameInitialReleaseBranch()
+        const previousPullRequest = await getPullRequestByBranch(item.branch, releaseBranch, "MERGED");
+        
+        if (previousPullRequest.size == 1 ) {
+            const title = previousPullRequest.values[0].title
+            const destination = getNameReleaseBranch()
+            
+            const result = await createPullRequest(item.branch, title, destination);
+            if (result) {
+                const url = getPullRequestUrl(result.id)
+                console.log(`Pull request created for the ${chalk.bgGreen(item.branch)} branch ${chalk.blue.bold(url)}`)
+            }
+        } else {
+            console.error(`The pull request for the ${chalk.red.bold(item.branch)} branch was not found`);
+        }        
+    }    
+}
+
+
+enum Commands {
+	init = "init",
+	preRelease = "pre-release",
+	nextRelease = "next-release",
+	quit = "quit"
+}
+
+const promptUser = async (): Promise<void> => {
+	inquirer.prompt([
+		{
+			type: "list",
+			name: "command",
+			message: "Choose option",
+			choices: Object.values(Commands)
+		}
+	])
+	.then( async (answers: any): Promise<void> => {
+		switch ( answers["command"] ) {
+			case Commands.init:
+				await createReleaseBranch()
+				await preparePullRequest()
+				break;
+			case Commands.preRelease:
+				await updateDestinationBranch()
+				break;
+			case Commands.nextRelease:
+				await createReleaseBranch();
+    			await createPullRequests();
+				break;
+			default: 
+				break;
+		 }
+
+	});
+}
+
 if (validateEnv()) {
-	await createReleaseBranch()
-	await preparePullRequest()
+	await promptUser()	
 }

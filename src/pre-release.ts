@@ -3,7 +3,7 @@ import { validateEnv, developBranch } from './helpers/validator.js'
 import { getNameReleaseBranch, createBranchesArray } from './helpers/branch.js'
 import { getPullRequestByBranch, updatePullRequestDestination, getPullRequestUrl } from './services/bitbucket.js'
 
-const updateDestinationBranch = async () => {
+const updateDestinationBranch = async (): Promise<void> => {
 	const branches = createBranchesArray()
 
 	for (const item of branches) {

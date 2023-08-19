@@ -22,12 +22,16 @@ const getNameReleaseBranch = () => {
   return result
 }
 
-const createBranchesArray = () => {
-    const data = [];
+type Branch = {
+  branch: string;  
+};
 
-    for (let i = 1; i <= 10; i++) {
-        const suffix = String(i).padStart(2, '0');
-        const branch = process.env[`BRANCH_${suffix}`];        
+const createBranchesArray = (): Array<Branch> => {
+    const data: Array<Branch> = [];
+
+    for (let i: number = 1; i <= 10; i++) {
+        const suffix: string = String(i).padStart(2, '0');
+        const branch: string | undefined = process.env[`BRANCH_${suffix}`];
 
         if (branch) {
             data.push({branch: branch});
