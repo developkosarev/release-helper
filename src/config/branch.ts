@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv'
 dotenv.config()
 
-const countBranches: number = 10;
+const countBranches: number = 20;
 
 type Branch = {
   branch: string;  

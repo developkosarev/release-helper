@@ -5,7 +5,7 @@ import { getNameReleaseBranch, getNameInitialReleaseBranch } from './config/rele
 import { validateEnv, developBranch } from './helpers/validator.js'
 import { getBranch, createBranch, getPullRequestByBranch, getPullRequestUrl, updatePullRequestDestination, createPullRequest } from './services/bitbucket.js'
 
-const createReleaseBranch = async () => {
+const createReleaseBranch = async (): Promise<string> => {
 	const devBranch = await getBranch(developBranch)
 	if (!devBranch) {
 		throw new Error("Can't get a develop branch")
@@ -54,7 +54,7 @@ const updateDestinationBranch = async (): Promise<void> => {
 	}
 }
 
-const createPullRequests = async () => {
+const createPullRequests = async (): Promise<void> => {
     const branches = createBranchesArray();
 
     for (const item of branches) {        

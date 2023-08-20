@@ -1,13 +1,8 @@
-import * as dotenv from 'dotenv'
-dotenv.config()
 import axios from 'axios';
-import { getToken } from '../config/bitbucket.js'
+import { getToken, getWorkspace, getRepository } from '../config/bitbucket.js'
 
 const BASE_API_URL: string = "https://api.bitbucket.org/2.0/repositories/";
 const BASE_URL : string = "https://bitbucket.org/";
-
-const workspace = process.env['WORKSPACE'];
-const repository = process.env['REPOSITORY'];
 
 function config() {
   const token = getToken();
@@ -22,6 +17,8 @@ function config() {
 }
 
 const getBranch = async (branch: string | undefined) => {  
+  const workspace = getWorkspace()
+  const repository = getRepository()
   const url = `${BASE_API_URL}${workspace}/${repository}/refs/branches/${branch}`
   
   try {
@@ -33,6 +30,8 @@ const getBranch = async (branch: string | undefined) => {
 }
 
 const createBranch = async (branch: string, developBranch: string | undefined) => {
+  const workspace = getWorkspace()
+  const repository = getRepository()
   const url = `${BASE_API_URL}${workspace}/${repository}/refs/branches`  
   const bodyData = `{
     "name": "${branch}",
@@ -50,7 +49,9 @@ const createBranch = async (branch: string, developBranch: string | undefined) =
   }
 }
 
-const createPullRequest = async (branch: string, title: string, destination: string) => {  
+const createPullRequest = async (branch: string, title: string, destination: string) => {
+  const workspace = getWorkspace()
+  const repository = getRepository()
   const url = `${BASE_API_URL}${workspace}/${repository}/pullrequests`
   
   const bodyData = `{
@@ -79,6 +80,8 @@ const createPullRequest = async (branch: string, title: string, destination: str
 }
 
 const getPullRequests = async () => {
+  const workspace = getWorkspace()
+  const repository = getRepository()
   const url = `${BASE_API_URL}${workspace}/${repository}/pullrequests`
   	
 	const { data } = await axios.get(url, config());
@@ -86,6 +89,8 @@ const getPullRequests = async () => {
 }
 
 const getPullRequestByBranch = async (branch: string | undefined, destination: string | undefined, state: string = "OPEN") => {
+  const workspace = getWorkspace()
+  const repository = getRepository()
   const params = `source.branch.name="${branch}"+AND+destination.branch.name="${destination}"+AND+state="${state}"`
   const url = `${BASE_API_URL}${workspace}/${repository}/pullrequests?q=${params}`
   	
@@ -94,6 +99,8 @@ const getPullRequestByBranch = async (branch: string | undefined, destination: s
 }
 
 const updatePullRequestDestination = async (id: string, destination: string) => {
+  const workspace = getWorkspace()
+  const repository = getRepository()
   const url = `${BASE_API_URL}${workspace}/${repository}/pullrequests/${id}`
 
   const bodyData = `{
@@ -113,7 +120,9 @@ const updatePullRequestDestination = async (id: string, destination: string) => 
   }
 }
 
-const getPullRequestUrl = (id: string) => {    
+const getPullRequestUrl = (id: string) => {
+  const workspace = getWorkspace()
+  const repository = getRepository()
   const url = `${BASE_URL}${workspace}/${repository}/pull-requests`
   return `${url}/${id}`
 }
