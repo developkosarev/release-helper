@@ -2,10 +2,12 @@ import chalk from 'chalk';
 import inquirer from 'inquirer';
 import { createBranchesArray } from './config/branch.js'
 import { getNameReleaseBranch, getNameInitialReleaseBranch } from './config/release.js'
-import { validateEnv, developBranch } from './helpers/validator.js'
+import { getDevelopBranch } from './config/bitbucket.js'
+import { validateEnv } from './helpers/validator.js'
 import { getBranch, createBranch, getPullRequestByBranch, getPullRequestUrl, updatePullRequestDestination, createPullRequest } from './services/bitbucket.js'
 
 const createReleaseBranch = async (): Promise<string> => {
+	const developBranch = getDevelopBranch()
 	const devBranch = await getBranch(developBranch)
 	if (!devBranch) {
 		throw new Error("Can't get a develop branch")
@@ -24,6 +26,7 @@ const createReleaseBranch = async (): Promise<string> => {
 }
 
 const preparePullRequest = async (): Promise<void> => {
+	const developBranch = getDevelopBranch()
 	const branches = createBranchesArray()
 
 	for (const item of branches) {
@@ -38,6 +41,7 @@ const preparePullRequest = async (): Promise<void> => {
 }
 
 const updateDestinationBranch = async (): Promise<void> => {
+	const developBranch = getDevelopBranch()
 	const branches = createBranchesArray()
 
 	for (const item of branches) {

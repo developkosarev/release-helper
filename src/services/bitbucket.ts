@@ -16,7 +16,7 @@ function config() {
   }
 }
 
-const getBranch = async (branch: string | undefined) => {  
+const getBranch = async (branch: string) => {  
   const workspace = getWorkspace()
   const repository = getRepository()
   const url = `${BASE_API_URL}${workspace}/${repository}/refs/branches/${branch}`
@@ -29,7 +29,7 @@ const getBranch = async (branch: string | undefined) => {
   }	
 }
 
-const createBranch = async (branch: string, developBranch: string | undefined) => {
+const createBranch = async (branch: string, developBranch: string) => {
   const workspace = getWorkspace()
   const repository = getRepository()
   const url = `${BASE_API_URL}${workspace}/${repository}/refs/branches`  
@@ -88,7 +88,7 @@ const getPullRequests = async () => {
 	return data;
 }
 
-const getPullRequestByBranch = async (branch: string | undefined, destination: string | undefined, state: string = "OPEN") => {
+const getPullRequestByBranch = async (branch: string, destination: string, state: string = "OPEN") => {
   const workspace = getWorkspace()
   const repository = getRepository()
   const params = `source.branch.name="${branch}"+AND+destination.branch.name="${destination}"+AND+state="${state}"`

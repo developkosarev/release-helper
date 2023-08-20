@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv'
 dotenv.config()
 
-const envValue = (value: 'TOKEN' | 'WORKSPACE' | 'REPOSITORY'): string => {
+const envValue = (value: 'TOKEN' | 'WORKSPACE' | 'REPOSITORY' | 'DEVELOP_BRANCH'): string => {
   const envValue: string | undefined = process.env[value]
 
   if (!envValue) {
@@ -23,4 +23,8 @@ const getRepository = (): string => {
   return envValue('REPOSITORY');  
 }
 
-export { getToken, getWorkspace, getRepository}
+const getDevelopBranch = (): string => {
+  return envValue('DEVELOP_BRANCH');  
+}
+
+export { getToken, getWorkspace, getRepository, getDevelopBranch}
