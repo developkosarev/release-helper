@@ -8,6 +8,7 @@
     "start": "npx tsc; node dist/index.js",
     "start-ssh": "npx tsc; node dist/ssh.js",
     "start-mysql": "npx tsc; node dist/mysql.js",
+    "start-fetch": "npx tsc; node dist/fetch.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
