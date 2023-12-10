@@ -1,3 +1,4 @@
+.zshrc
 /node_modules
 .env
 .idea/*
