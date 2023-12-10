@@ -72,7 +72,6 @@ const connect = async (): Promise<void> => {
 
 
 const connectMysql = async (): Promise<void> => {
-
     const conn : Client = new Client();
 
     conn.on('ready', () => {
@@ -93,10 +92,16 @@ const connectMysql = async (): Promise<void> => {
 
                 // create the connection
                 const connection = await mysql.createConnection(updatedDbServer);
-                // query database
-                const [rows, fields] = await connection.execute('SELECT * FROM store_website', ['Morty', 14]);
+                
+                const sql: string = 
+                `SELECT *
+                FROM store_website`
 
-                console.log(rows); 
+                // query database
+                const [rows, fields] = await connection.execute(sql, ['Morty', 14]);
+
+                console.log(fields); 
+                console.log(rows);
             
                 connection.destroy();
 
