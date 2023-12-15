@@ -25,6 +25,7 @@
     "@types/inquirer": "^9.0.3",
     "@types/node": "^20.5.1",
     "@types/ssh2": "^1.11.14",
+    "http-server": "^14.1.1",
     "tsc-watch": "^6.0.4",
     "typescript": "^5.1.6"
   }

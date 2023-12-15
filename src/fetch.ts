@@ -1,8 +1,8 @@
 import axios from 'axios';
-
-const BASE_URL : string = "https://www.yoshien.com/";
+import { getBaseUrl } from './config/website.js'
 
 const getPage = async (page: string) => {
+  const BASE_URL: string = getBaseUrl();
   const url = `${BASE_URL}`
 
   try {
@@ -12,7 +12,6 @@ const getPage = async (page: string) => {
     return null;
   }
 }
-
 
 const data = await getPage('');
 console.log(data);
