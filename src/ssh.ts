@@ -1,7 +1,9 @@
 import { readFileSync } from "fs"
-import { Client } from 'ssh2';
-import mysql from 'mysql2/promise';
+import { Client } from 'ssh2'
+import mysql from 'mysql2/promise'
 import { getHost, getUser, getPassword, getDatabase, getSshHost, getSshUser, getSshPrivateKey } from './config/database.js'
+import { WebsiteRepository } from "./repository/WebsiteRepository.js";
+import { Website } from "./entities/Website.js";
 
 const dbServer = {
     host: getHost(),
@@ -19,7 +21,6 @@ const forwardConfig = {
 };
 
 const connect = async (): Promise<void> => {
-
     const conn : Client = new Client();
 
     conn.on('ready', () => {
@@ -32,13 +33,10 @@ const connect = async (): Promise<void> => {
             stream.on('close', (code: string, signal: string) => {
                 console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
                 conn.end();
-
             }).on('data', (data: any) => {
                 console.log('STDOUT: ' + data);
-
             }).stderr.on('data', (data: any) => {
                 console.log('STDERR: ' + data);
-
             });
         });
 
@@ -49,10 +47,8 @@ const connect = async (): Promise<void> => {
             stream.on('close', (code: string, signal: string) => {
                 console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
                 conn.end();
-
             }).on('data', (data: any) => {
                 console.log('STDOUT: ' + data);
-
             }).stderr.on('data', (data: any) => {
                 console.log('STDERR: ' + data);
 
@@ -92,17 +88,11 @@ const connectMysql = async (): Promise<void> => {
 
                 // create the connection
                 const connection = await mysql.createConnection(updatedDbServer);
-                
-                const sql: string = 
-                `SELECT *
-                FROM store_website`
 
-                // query database
-                const [rows, fields] = await connection.execute(sql, ['Morty', 14]);
+                const repo : WebsiteRepository = new WebsiteRepository(connection);
+                const result: Website = await repo.findOne(1);
+                console.log(result)
 
-                console.log(fields); 
-                console.log(rows);
-            
                 connection.destroy();
 
                 console.log('destroy');
