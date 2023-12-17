@@ -90,7 +90,7 @@ const connectMysql = async (): Promise<void> => {
                 const connection = await mysql.createConnection(updatedDbServer);
 
                 const repo : WebsiteRepository = new WebsiteRepository(connection);
-                const result: Website = await repo.findOne(1);
+                const result: Website | null = await repo.findOne(1);
                 console.log(result)
 
                 connection.destroy();

@@ -1,3 +1,3 @@
 export interface IRepository<T> {
-  findOne(id: number): Promise<T>;
+  findOne(id: number): Promise<T | null>;
 }

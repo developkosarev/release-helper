@@ -18,14 +18,20 @@ import { BaseRepository } from "./BaseRepository.js";
 
 export class WebsiteRepository extends BaseRepository<Website>{
 
-  async findOne(id: number): Promise<Website> {
+  async findOne(id: number): Promise<Website | null> {
     const sql: string = `SELECT * FROM store_website WHERE website_id=${id}`
 
-    const [rows, fields] = await this.connection.execute(sql);
+    const [rows] = await this.connection.execute(sql);
 
-    console.log(fields);
-    console.log(rows);
+    if (!Array.isArray(rows)) {
+      throw new Error("Result is not array.");
+    }
 
-    return new Website(1, 'de', 'de')
+    if (rows.length === 0) {
+      return null;
+    }
+    const tempResult: any = rows[0];
+
+    return new Website(tempResult.website_id, tempResult.code, tempResult.name)
   }
 }

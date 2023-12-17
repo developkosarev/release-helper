@@ -9,7 +9,7 @@ export abstract class BaseRepository<T> implements IRepository<T> {
     this.connection = connection;
   }
 
-  findOne(id: number): Promise<T> {
+  findOne(id: number): Promise<T | null> {
     throw new Error("Method not implemented.");
   }
 }
