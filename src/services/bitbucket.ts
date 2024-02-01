@@ -127,19 +127,21 @@ const getPullRequestUrl = (id: string) => {
   return `${url}/${id}`
 }
 
-const mergePullRequest = async (id: string, type: string) => {
+const mergePullRequest = async (id: string) => {
   const workspace = getWorkspace()
   const repository = getRepository()
   const url = `${BASE_API_URL}${workspace}/${repository}/pullrequests/${id}/merge`
 
   const bodyData = `{
-    "type": "${type}",
+    "type": "merge",
+    "message": "Merged",
     "close_source_branch": false,
+    "merge_strategy": "merge_commit"
   }`
   
-  try {    
-    const { data } = await axios.post(url, bodyData, config());
-    return data
+  try {
+    const { data } = await axios.post(url, bodyData, config());    
+    return data.links.html.href
   } catch (e: any) {
     console.log(e.response.data)
     return null;

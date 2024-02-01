@@ -87,8 +87,8 @@ const mergePullRequests = async (): Promise<void> => {
 	for (const item of branches) {
 		const result = await getPullRequestByBranch(item.branch, releaseBranch);
 		if (result.size == 1 ) {			
-			const url = mergePullRequest(result.values[0].id, result.values[0].type)		
-			console.log(`The pull request ${chalk.blue.bold(url)} merged`);
+			const url = await mergePullRequest(result.values[0].id)
+			console.log(`The pull request ${chalk.blue.bold(url)} was merged`);
 		} else {
 			console.error(`The pull request for the ${chalk.red.bold(item.branch)} branch and release ${chalk.red.bold(releaseBranch)} was not found`);
 		}	
