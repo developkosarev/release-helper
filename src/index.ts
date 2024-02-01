@@ -80,11 +80,29 @@ const createPullRequests = async (): Promise<void> => {
     }    
 }
 
+const mergePullRequests = async (): Promise<void> => {	
+	const releaseBranch = getNameReleaseBranch()
+	const branches = createBranchesArray()
+
+	for (const item of branches) {
+		const result = await getPullRequestByBranch(item.branch, releaseBranch);
+		if (result.size == 1 ) {
+			//const destination = getNameReleaseBranch()			
+			//const branch = await updatePullRequestDestination(result.values[0].id, destination)			
+
+			//const url = getPullRequestUrl(branch.id)		
+			//console.log(`The pull request ${chalk.blue.bold(url)} updated`);
+		} else {
+			console.error(`The pull request for the ${chalk.red.bold(item.branch)} branch and release ${chalk.red.bold(releaseBranch)} was not found`);
+		}	
+	}
+}
 
 enum Commands {
 	init = "init",
 	preRelease = "pre-release",
 	nextRelease = "next-release",
+	mergeRelease = "merge-release",
 	quit = "quit"
 }
 
@@ -109,6 +127,9 @@ const promptUser = async (): Promise<void> => {
 			case Commands.nextRelease:
 				await createReleaseBranch();
     			await createPullRequests();
+				break;
+			case Commands.mergeRelease:
+				await mergePullRequests();
 				break;
 			default: 
 				break;
