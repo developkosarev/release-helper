@@ -4,7 +4,7 @@ import { createBranchesArray } from './config/branch.js'
 import { getNameReleaseBranch, getNameInitialReleaseBranch } from './config/release.js'
 import { getDevelopBranch } from './config/bitbucket.js'
 import { validateEnv } from './helpers/validator.js'
-import { getBranch, createBranch, getPullRequestByBranch, getPullRequestUrl, updatePullRequestDestination, createPullRequest } from './services/bitbucket.js'
+import { getBranch, createBranch, getPullRequestByBranch, getPullRequestUrl, updatePullRequestDestination, createPullRequest, mergePullRequest } from './services/bitbucket.js'
 
 const createReleaseBranch = async (): Promise<string> => {
 	const developBranch = getDevelopBranch()
@@ -80,11 +80,26 @@ const createPullRequests = async (): Promise<void> => {
     }    
 }
 
+const mergePullRequests = async (): Promise<void> => {	
+	const releaseBranch = getNameReleaseBranch()
+	const branches = createBranchesArray()
+
+	for (const item of branches) {
+		const result = await getPullRequestByBranch(item.branch, releaseBranch);
+		if (result.size == 1 ) {			
+			const url = await mergePullRequest(result.values[0].id)
+			console.log(`The pull request ${chalk.blue.bold(url)} was merged`);
+		} else {
+			console.error(`The pull request for the ${chalk.red.bold(item.branch)} branch and release ${chalk.red.bold(releaseBranch)} was not found`);
+		}	
+	}
+}
 
 enum Commands {
 	init = "init",
 	preRelease = "pre-release",
 	nextRelease = "next-release",
+	mergeRelease = "merge-release",
 	quit = "quit"
 }
 
@@ -109,6 +124,9 @@ const promptUser = async (): Promise<void> => {
 			case Commands.nextRelease:
 				await createReleaseBranch();
     			await createPullRequests();
+				break;
+			case Commands.mergeRelease:
+				await mergePullRequests();
 				break;
 			default: 
 				break;
