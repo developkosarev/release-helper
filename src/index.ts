@@ -4,7 +4,7 @@ import { createBranchesArray } from './config/branch.js'
 import { getNameReleaseBranch, getNameInitialReleaseBranch } from './config/release.js'
 import { getDevelopBranch } from './config/bitbucket.js'
 import { validateEnv } from './helpers/validator.js'
-import { getBranch, createBranch, getPullRequestByBranch, getPullRequestUrl, updatePullRequestDestination, createPullRequest } from './services/bitbucket.js'
+import { getBranch, createBranch, getPullRequestByBranch, getPullRequestUrl, updatePullRequestDestination, createPullRequest, mergePullRequest } from './services/bitbucket.js'
 
 const createReleaseBranch = async (): Promise<string> => {
 	const developBranch = getDevelopBranch()
@@ -86,12 +86,9 @@ const mergePullRequests = async (): Promise<void> => {
 
 	for (const item of branches) {
 		const result = await getPullRequestByBranch(item.branch, releaseBranch);
-		if (result.size == 1 ) {
-			//const destination = getNameReleaseBranch()			
-			//const branch = await updatePullRequestDestination(result.values[0].id, destination)			
-
-			//const url = getPullRequestUrl(branch.id)		
-			//console.log(`The pull request ${chalk.blue.bold(url)} updated`);
+		if (result.size == 1 ) {			
+			const url = mergePullRequest(result.values[0].id, result.values[0].type)		
+			console.log(`The pull request ${chalk.blue.bold(url)} merged`);
 		} else {
 			console.error(`The pull request for the ${chalk.red.bold(item.branch)} branch and release ${chalk.red.bold(releaseBranch)} was not found`);
 		}	

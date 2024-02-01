@@ -127,6 +127,25 @@ const getPullRequestUrl = (id: string) => {
   return `${url}/${id}`
 }
 
+const mergePullRequest = async (id: string, type: string) => {
+  const workspace = getWorkspace()
+  const repository = getRepository()
+  const url = `${BASE_API_URL}${workspace}/${repository}/pullrequests/${id}/merge`
+
+  const bodyData = `{
+    "type": "${type}",
+    "close_source_branch": false,
+  }`
+  
+  try {    
+    const { data } = await axios.post(url, bodyData, config());
+    return data
+  } catch (e: any) {
+    console.log(e.response.data)
+    return null;
+  }
+}
+
 export { 
   getBranch,
   createBranch,
@@ -134,5 +153,6 @@ export {
   createPullRequest,
   getPullRequests,
   getPullRequestByBranch,
-  updatePullRequestDestination
+  updatePullRequestDestination,
+  mergePullRequest
 };
