@@ -3,6 +3,8 @@ import { Client } from 'ssh2';
 import mysql from 'mysql2/promise';
 import { getHost, getUser, getPassword, getDatabase, getSshHost, getSshUser, getSshPrivateKey } from './config/database.js'
 
+import { getWebsite } from './repository/website.js'
+
 const dbServer = {
     host: getHost(),
     port: 3306,
@@ -121,4 +123,6 @@ const connectMysql = async (): Promise<void> => {
 }
 
 //await connect();
-await connectMysql();
+//await connectMysql();
+
+await getWebsite();
